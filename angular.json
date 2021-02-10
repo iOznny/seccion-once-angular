@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "seccion-once-angular"
+    }
+  },
+  "defaultProject": "seccion-once-angular",
+  "cli": {
+    "analytics": "51581bc7-3d84-4578-9068-3365860fdb4b"
+  }
 }
