@@ -1,0 +1,65 @@
+<h4>Formularios <small>Reactivos</small></h4>
+<hr>
+
+<form autocomplete="off" [formGroup]="form" (ngSubmit)="save()">
+  <div>
+    <div class="form-group row mt-3">
+      <label class="col-2 col-form-label">Nombre</label>
+      <div class="col">
+        <input class="form-control" type="text" placeholder="Nombre" formControlName="name" [class.is-invalid]="nameInvalid">
+      </div>
+      <small class="text-danger" *ngIf="nameInvalid">Ingrese minimo 5 caracteres</small>
+    </div>
+
+    <div class="form-group row mt-3">
+      <label class="col-2 col-form-label">Apellido</label>
+      <div class="col">
+        <input class="form-control" type="text" placeholder="Apellido" formControlName="lastname" [class.is-invalid]="lastnameInvalid">
+      </div>
+      <small class="text-danger" *ngIf="lastnameInvalid">Ingrese minimo 5 caracteres</small>
+    </div>
+  </div>
+
+  <div class="form-group row mt-3">
+    <label class="col-2 col-form-label">Correo</label>
+    <div class="col">
+      <input class="form-control" type="email" placeholder="Correo electrónico" formControlName="email" [class.is-invalid]="emailInvalid">
+    </div>
+    <small class="text-danger" *ngIf="emailInvalid">Ingrese el correo</small>
+  </div>
+
+  <div class="form-group row mt-3" formGroupName="address">
+    <label class="col-2 col-form-label">Dirección</label>
+    <div class="form-row col">
+      <div class="col mt-3">
+        <input class="form-control" type="text" placeholder="Distrito" formControlName="district" [class.is-invalid]="districtInvalid" >
+      </div>
+
+      <div class="col mt-3">
+        <input class="form-control" type="text" placeholder="Ciudad" formControlName="city" [class.is-invalid]="cityInvalid" >
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row mt-2">
+    <label class="col-2 col-form-label">&nbsp;</label>
+    <div class="input-group col">
+      <button type="submit" class="btn btn-outline-primary btn-block">
+        Guardar
+      </button>
+    </div>
+  </div>
+
+</form>
+
+<hr>
+
+<pre>
+  Estado del formulario: {{ form.valid }}
+  <br>
+  Status: {{ form.status }}
+</pre>
+
+<pre>
+  {{ form.value | json }}
+</pre>
