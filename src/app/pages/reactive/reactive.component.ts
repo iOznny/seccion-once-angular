@@ -23,6 +23,9 @@ export class ReactiveComponent implements OnInit {
 
     // Cargar data
     this.loadData();
+
+    // Escuchar los cambios general del formulario.
+    this.createListeners();
   }
 
   ngOnInit(): void {
@@ -68,6 +71,10 @@ export class ReactiveComponent implements OnInit {
     return (password === cpassword) ? false : true;
   }
 
+  get userNoValid() {
+    return this.form.get('user').invalid && this.form.get('user').touched;
+  }
+
   /**
   * Creamos el formulareio Reactivo.
   * Utilizamos el FormGroup para inicializarlo dentro de la función
@@ -83,6 +90,7 @@ export class ReactiveComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(5)]],
       lastname: ['', [Validators.required, this.valServices.noHerrera]],
       email: ['', [Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$'), Validators.required]],
+      user: ['', Validators.minLength(1), this.valServices.existUser],
       password: ['', [Validators.required, Validators.minLength(5)]],
       cpassword: ['', [Validators.required, Validators.minLength(5)]],
       address: this.fb.group({
@@ -96,12 +104,26 @@ export class ReactiveComponent implements OnInit {
 
   }
 
+  // Escuchar los cambios del formulario.
+  createListeners() {
+    this.form.valueChanges.subscribe( value => {
+      console.log(value);
+    });
+
+    this.form.statusChanges.subscribe( status => console.log(status));
+
+    // Escuchar los cambios de un solo campo.
+    //this.form.get('name').valueChanges.subscribe( value => console.log(value));
+  }
+
   // Cargamos la información al form.
   loadData() {
     this.form.reset({
       "name": "Angular",
       "lastname": "Forms",
       "email": "forms@angular.com",
+      "password": '123456',
+      "cpassword": '123456',  
       "address": {
         "district": "CDMX",
         "city": "Ciudad de México"
