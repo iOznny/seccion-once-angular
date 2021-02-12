@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ValidatorsService } from 'src/app/services/validators.service';
 
 @Component({
   selector: 'app-reactive',
@@ -16,7 +17,7 @@ export class ReactiveComponent implements OnInit {
   * metodos para crear formularios facilmente.
   */
 
-  constructor(private fb: FormBuilder) { 
+  constructor(private fb: FormBuilder, private valServices: ValidatorsService) { 
     // Ejecutamos la funcion createFrom()
     this.createForm();
 
@@ -51,6 +52,22 @@ export class ReactiveComponent implements OnInit {
     return this.form.get('address.city').invalid && this.form.get('address.city').touched;
   }
 
+  get hobbies() {
+    return this.form.get('hobbies') as FormArray;
+  }
+
+  // Validar contraseñas.
+  get passwordNoValid() {
+    return this.form.get('password').invalid && this.form.get('password').touched;
+  }
+
+  get confirmPassword() {
+    const password = this.form.get('password').value;
+    const cpassword = this.form.get('cpassword').value;
+
+    return (password === cpassword) ? false : true;
+  }
+
   /**
   * Creamos el formulareio Reactivo.
   * Utilizamos el FormGroup para inicializarlo dentro de la función
@@ -64,18 +81,24 @@ export class ReactiveComponent implements OnInit {
       * name: ['value', Validadores Sincrono, Validadores Asincronos]
       */
       name: ['', [Validators.required, Validators.minLength(5)]],
-      lastname: ['', Validators.required],
+      lastname: ['', [Validators.required, this.valServices.noHerrera]],
       email: ['', [Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$'), Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(5)]],
+      cpassword: ['', [Validators.required, Validators.minLength(5)]],
       address: this.fb.group({
         district: ['', Validators.required],
         city: ['', Validators.required],
-      })
+      }),
+      hobbies: this.fb.array([])
+    }, {
+      validators: this.valServices.passwordEquals('password', 'cpassword')
     });
+
   }
 
   // Cargamos la información al form.
   loadData() {
-    this.form.setValue({
+    this.form.reset({
       "name": "Angular",
       "lastname": "Forms",
       "email": "forms@angular.com",
@@ -84,6 +107,16 @@ export class ReactiveComponent implements OnInit {
         "city": "Ciudad de México"
       }
     });
+  }
+
+  // Agregar nuevo hobby
+  addHobby() {
+    this.hobbies.push(this.fb.control(''));
+  }
+
+  // Borrar hobby 
+  deleteHobby(i: number) {
+    this.hobbies.removeAt(i);
   }
 
   // Guardamos el form.
